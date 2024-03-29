@@ -132,6 +132,6 @@ app.use((err, req, res, next) => {
     res.status(500).send('Something broke!')
   })
 
-app.listen(8080, () => {
+app.listen(MYSQL_PORT, () => {
     console.log('Example app listening on port 8080!')
 })
