@@ -10,6 +10,8 @@ import {
     insertarTarea
  } from './database.js'
 
+ import {PORT} from './config.js'
+
 const app = express()
 
 // ---------------------------------- Consultas ----------------------------------
@@ -83,7 +85,7 @@ app.get('/obtenerIdDepartamentoByNombre/:nombreDepartamento', async (req, res) =
 // **************** Tareas ****************
 app.get('/consultarTareas', async (req, res) => {
     const tareas = await consultarTareas()
-    res.send(tareas[0]['id'])
+    res.send(tareas)
 })
 
 app.get('/consultarTareaById/:id', async (req, res) => {
@@ -132,6 +134,6 @@ app.use((err, req, res, next) => {
     res.status(500).send('Something broke!')
   })
 
-app.listen(MYSQL_PORT, () => {
-    console.log('Example app listening on port 8080!')
+app.listen(PORT, () => {
+    console.log('Example app listening on port ', PORT)
 })

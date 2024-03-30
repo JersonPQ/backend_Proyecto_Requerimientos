@@ -1,12 +1,12 @@
 {
-  "name": "connect_database",
+  "name": "backend_proyecto_requerimientos",
   "version": "1.0.0",
   "description": "",
   "type": "module",
-  "main": "database.js",
+  "main": "rutas.js",
   "scripts": {
-    "start": "node rutas.js",
-    "dev": "nodemon rutas.js"
+    "dev": "nodemon rutas.js",
+    "start": "node rutas.js"
   },
   "keywords": [],
   "author": "",
@@ -15,5 +15,8 @@
     "dotenv": "^16.4.5",
     "express": "^5.0.0-beta.3",
     "mysql2": "^3.9.3"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
   }
 }
