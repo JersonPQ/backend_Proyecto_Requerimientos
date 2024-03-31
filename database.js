@@ -1,13 +1,14 @@
 import mysql from "mysql2"
-import {MYSQL_HOST, MYSQL_USER, MYSQL_PASSWORD, MYSQL_DATABASE, MYSQL_PORT} from "./config.js"
+import dotenv from "dotenv"
+
+dotenv.config()
 
 
 const pool = mysql.createPool({
-    host: MYSQL_HOST,
-    user: MYSQL_USER,
-    port: MYSQL_PORT,
-    password: MYSQL_PASSWORD,
-    database: MYSQL_DATABASE
+    host: process.env.MYSQL_HOST,
+    user: process.env.MYSQL_USER,
+    password: process.env.MYSQL_PASSWORD,
+    database: process.env.MYSQL_DATABASE
 }).promise()
 
 // ---------------------------------- Consultas ----------------------------------
@@ -36,6 +37,17 @@ export async function obtenerIdProyectoByNombre(nombreProyecto) {
     const query = "SELECT id FROM proyectos WHERE nombreProyecto = ?;"
     const [rows] = await pool.query(query, [nombreProyecto])
     return rows
+}
+// estados de proyectos
+export async function consultarEstadosProyectos() {
+    try {
+        const query = "SELECT id, nombreEstado FROM estadosProyectos;";
+        const [rows] = await pool.query(query);
+        return rows;
+    } catch (error) {
+        console.error("Error al consultar estados de colaboradores:", error);
+        throw error; // Propagar el error para que pueda ser manejado en otro lugar si es necesario
+    }
 }
 
 // **************** Colaboradores ****************
@@ -92,6 +104,23 @@ export async function consultarDepartamentos() {
 export async function obtenerIdDepartamentoByNombre(nombreDepartamento) {
     const query = "SELECT id FROM departamentos WHERE nombreDepartamento = ?;"
     const [rows] = await pool.query(query, [nombreDepartamento])
+    return rows
+}
+// **************** Estados Colaboradores ****************
+export async function consultarEstadosColaboradores() {
+    try {
+        const query = "SELECT id, nombreEstado FROM estadosColaboradores;";
+        const [rows] = await pool.query(query);
+        return rows;
+    } catch (error) {
+        console.error("Error al consultar estados de colaboradores:", error);
+        throw error; // Propagar el error para que pueda ser manejado en otro lugar si es necesario
+    }
+}
+
+export async function obtenerIdEstadosColaboradoresByNombre(nombreEstado) {
+    const query = "SELECT id FROM estadosColaboradores WHERE nombreEstado = ?;"
+    const [rows] = await pool.query(query, [nombreEstado])
     return rows
 }
 
@@ -157,6 +186,13 @@ export async function insertarProyecto(nombreProyecto, recursosNecesarios, presu
     }
 }
 
+// Esta función asigna un proyecto a un colaborador por nombre de usuario
+export async function insertarIdProyectoColaborador(nombreUsuario, idProyecto) {
+    const query = "UPDATE colaboradores SET idProyecto = ? WHERE nombreUsuario = ?";
+    const [rows] = await pool.query(query, [idProyecto, nombreUsuario]); 
+    return rows.affectedRows > 0; // Retorna true si se actualizó al menos una fila
+}
+
 // **************** Tareas ****************
 export async function insertarTarea(nombreTarea, idProyecto, idEstadoTarea, idColaborador, storyPoints) {
     const query = "INSERT INTO tareas (nombreTarea, idProyecto, idEstadoTarea, idColaborador, storyPoints) \
@@ -165,3 +201,78 @@ export async function insertarTarea(nombreTarea, idProyecto, idEstadoTarea, idCo
     return consultarTareaById(rows.insertId)
 }
 
+// ---------------------------------- Inicio de Sesión ----------------------------------
+// Función para validar el inicio de sesión y obtener los datos del usuario
+export async function validarInicioSesion(nombreUsuario, contrasena) {
+    const query = "SELECT id, administrador FROM colaboradores WHERE nombreUsuario = ? AND contrasena = ?;";
+    const [rows] = await pool.query(query, [nombreUsuario, contrasena]);
+    return rows.length > 0 ? rows[0] : null; // Devuelve los datos del primer usuario encontrado o null si no se encontró ningún usuario
+}
+
+// ---------------------------------- Actualizaciones ----------------------------------
+// **************** Colaboradores ****************
+export async function modificarCorreoPorNombreUsuario(nombreUsuario, nuevoCorreo) {
+    try {
+        // Realizar la consulta para actualizar el correo electrónico basándose en el nombre de usuario
+        const query = "UPDATE colaboradores SET correo = ? WHERE nombreUsuario = ?";
+        await pool.query(query, [nuevoCorreo, nombreUsuario]);
+
+        // Verificar si se realizó la actualización correctamente
+        const [updatedRows] = await pool.query("SELECT * FROM colaboradores WHERE nombreUsuario = ?", [nombreUsuario]);
+        if (updatedRows.length > 0) {
+            // Se encontró el colaborador y se actualizó el correo electrónico correctamente
+            return { success: true, message: "Correo electrónico actualizado correctamente." };
+        } else {
+            // No se encontró el colaborador con el nombre de usuario proporcionado
+            return { success: false, message: "No se encontró el colaborador con el nombre de usuario especificado." };
+        }
+    } catch (error) {
+        // Manejo de errores en caso de que ocurra algún problema durante la consulta
+        console.error("Error al actualizar el correo electrónico:", error);
+        return { success: false, message: "Ocurrió un error al actualizar el correo electrónico." };
+    }
+}
+
+export async function modificarEstadoPorNombreUsuario(nombreUsuario, nuevoEstado) {
+    try {
+        // Realizar la consulta para actualizar el correo electrónico basándose en el nombre de usuario
+        const query = "UPDATE colaboradores SET idEstadoColaborador = ? WHERE nombreUsuario = ?";
+        await pool.query(query, [nuevoEstado, nombreUsuario]);
+
+        // Verificar si se realizó la actualización correctamente
+        const [updatedRows] = await pool.query("SELECT * FROM colaboradores WHERE nombreUsuario = ?", [nombreUsuario]);
+        if (updatedRows.length > 0) {
+            // Se encontró el colaborador y se actualizó el correo electrónico correctamente
+            return { success: true, message: "Estado actualizado correctamente." };
+        } else {
+            // No se encontró el colaborador con el nombre de usuario proporcionado
+            return { success: false, message: "No se encontró el colaborador con el nombre de usuario especificado." };
+        }
+    } catch (error) {
+        // Manejo de errores en caso de que ocurra algún problema durante la consulta
+        console.error("Error al actualizar el Estado:", error);
+        return { success: false, message: "Ocurrió un error al actualizar el Estado." };
+    }
+}
+
+export async function modificarDepartamentoPorNombreUsuario(nombreUsuario, nuevoDepartamento) {
+    try {
+        // Realizar la consulta para actualizar el correo electrónico basándose en el nombre de usuario
+        const query = "UPDATE colaboradores SET idDepartamento = ? WHERE nombreUsuario = ?";
+        await pool.query(query, [nuevoDepartamento, nombreUsuario]);
+
+        // Verificar si se realizó la actualización correctamente
+        const [updatedRows] = await pool.query("SELECT * FROM colaboradores WHERE nombreUsuario = ?", [nombreUsuario]);
+        if (updatedRows.length > 0) {
+            // Se encontró el colaborador y se actualizó el correo electrónico correctamente
+            return { success: true, message: "Departamento actualizado correctamente." };
+        } else {
+            // No se encontró el colaborador con el nombre de usuario proporcionado
+            return { success: false, message: "No se encontró el colaborador con el nombre de usuario especificado." };
+        }
+    } catch (error) {
+        // Manejo de errores en caso de que ocurra algún problema durante la consulta
+        console.error("Error al actualizar el Departamento:", error);
+        return { success: false, message: "Ocurrió un error al actualizar el Departamento." };
+    }
+}

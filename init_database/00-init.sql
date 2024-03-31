@@ -80,16 +80,35 @@ CREATE TABLE tareas (
     FOREIGN KEY (idColaborador) REFERENCES colaboradores(id)
 );
 
+ALTER TABLE colaboradores
+ADD COLUMN idProyecto INT,
+ADD FOREIGN KEY (idProyecto) REFERENCES proyectos(id);
+
 # Si necesitan borrar tablas o la bd descomentan esto y lo corren 
 
-/*DROP TABLE IF EXISTS tareas;
-DROP TABLE IF EXISTS proyectos;
-DROP TABLE IF EXISTS colaboradores;
-DROP TABLE IF EXISTS departamentos;
-DROP TABLE IF EXISTS estadosProyectos;
-DROP TABLE IF EXISTS estadosTareas;
-DROP TABLE IF EXISTS estadosColaboradores;
+/*-- Eliminar la restricción de clave externa en colaboradores
+ALTER TABLE colaboradores DROP FOREIGN KEY colaboradores_ibfk_3;
 
+-- Eliminar la tabla de tareas
+DROP TABLE IF EXISTS tareas;
+
+-- Eliminar la tabla de proyectos
+DROP TABLE IF EXISTS proyectos;
+
+-- Eliminar la tabla de colaboradores
+DROP TABLE IF EXISTS colaboradores;
+
+-- Eliminar la tabla de departamentos
+DROP TABLE IF EXISTS departamentos;
+
+-- Eliminar la tabla de estados de proyectos
+DROP TABLE IF EXISTS estadosProyectos;
+
+-- Eliminar la tabla de estados de tareas
+DROP TABLE IF EXISTS estadosTareas;
+
+-- Eliminar la tabla de estados de colaboradores
+DROP TABLE IF EXISTS estadosColaboradores;
 -- Cambiar a la base de datos principal
 USE `progest`;
 
