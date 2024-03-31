@@ -1,6 +1,6 @@
 import express from 'express';
 import bodyParser from 'body-parser';
-import cors from 'cors'; // Importa el middleware cors
+// import cors from 'cors'; // Importa el middleware cors
 import {PORT} from "./config.js"
 import { 
     consultarProyectos, consultarProyectoById, obtenerIdProyectoByNombre,
@@ -25,7 +25,7 @@ import {
  app.use(bodyParser.json());
  
  // Habilita CORS para todas las rutas
- app.use(cors());
+//  app.use(cors());
 // ---------------------------------- Consultas ----------------------------------
 
 // **************** Proyectos ****************
