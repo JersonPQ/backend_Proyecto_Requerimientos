@@ -1,6 +1,7 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors'; // Importa el middleware cors
+import {PORT} from "./config.js"
 import { 
     consultarProyectos, consultarProyectoById, obtenerIdProyectoByNombre,
     consultarColaboradores, consultarColaboradorById, obtenerIdColaboradorByNombreUsuario, obtenerIdColaboradorByCorreo, obtenerIdColaboradorByCedula, obtenerIdColaboradorByNombreCompleto,
