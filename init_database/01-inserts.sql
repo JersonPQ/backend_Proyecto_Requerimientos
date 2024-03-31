@@ -33,7 +33,7 @@ VALUES ('Proyecto 3', 'Recursos 2', 2000, 'Descripcion 3', 2, '2022-01-01', '202
 
 Select * FROM proyectos;
 
-#si les da algun error aquí puede ser porque el id del proyecto no es 1 o 2
+-- si les da algun error aquí puede ser porque el id del proyecto no es 1 o 2
 -- insert de tareas
 INSERT INTO tareas (nombreTarea, idProyecto, idEstadoTarea, idColaborador, storyPoints)
 VALUES ('Tarea 3', 3, 1, 1, 1),

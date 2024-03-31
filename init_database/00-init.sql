@@ -84,7 +84,7 @@ ALTER TABLE colaboradores
 ADD COLUMN idProyecto INT,
 ADD FOREIGN KEY (idProyecto) REFERENCES proyectos(id);
 
-# Si necesitan borrar tablas o la bd descomentan esto y lo corren 
+-- Si necesitan borrar tablas o la bd descomentan esto y lo corren 
 
 /*-- Eliminar la restricción de clave externa en colaboradores
 ALTER TABLE colaboradores DROP FOREIGN KEY colaboradores_ibfk_3;
