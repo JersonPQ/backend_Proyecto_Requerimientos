@@ -61,9 +61,11 @@ export async function consultarColaboradores() {
 
 export async function consultarColaboradorById(id) {
     const query = "SELECT C.id, C.correo, C.nombre, C.primerApellido, C.segundoApellido, C.cedula, C.nombreUsuario, \
-                    C.idEstadoColaborador, E.nombreEstado, C.idDepartamento, D.nombreDepartamento, C.administrador \
-                    FROM colaboradores C inner join estadosColaboradores E on C.idEstadoColaborador = E.id \
-                    inner join departamentos D on C.idDepartamento = D.id \
+                    C.idEstadoColaborador, E.nombreEstado, C.idDepartamento, D.nombreDepartamento, C.administrador, \
+                    C.idProyecto \
+                    FROM colaboradores C \
+                    INNER JOIN estadosColaboradores E ON C.idEstadoColaborador = E.id \
+                    INNER JOIN departamentos D ON C.idDepartamento = D.id \
                     WHERE C.id = ?;"
     const [rows] = await pool.query(query, [id])
     return rows
